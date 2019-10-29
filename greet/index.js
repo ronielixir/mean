@@ -5,6 +5,6 @@ const sunda = require('./sunda');
 
 // Export the module
 module.exports = {
-	english: english,
-	sunda: sunda,
+	english,
+	sunda
 };
