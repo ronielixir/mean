@@ -1,47 +1,32 @@
-// Dependency
-const greet = require('./greet');
-const greet1 = require('./greet1');
-const greet2 = require('./greet2').greet;
-const greet3 = require('./greet3');
-const greet3b = require('./greet3');
-const Greet4 = require('./greet4');
-const greet5 = require('./greet5').greet;
-//const Emitter = require('./emitter');
-const Emitter = require('events');
-const eventConfig = require('./config').events;
+var express = require('express');
+var app = express();
 
 
-// Invoking greet from module greet
-greet.english();
-greet.sunda();
+var apiController = require('./controllers/apiController');
+var htmlController = require('./controllers/htmlController');
 
-console.log('---------------------------------');
-console.log('module pattern availability');
-console.log('---------------------------------');
+var port = process.env.PORT || 3000;
 
-// Invoke function expression from export
-greet1();
+app.use('/assets', express.static(__dirname + '/public'));
 
-//invoke object that already define in export
-greet2();
+app.set('view engine', 'ejs');
 
-// invoke created object from export
-greet3.greet();
-greet3.greeting = 'Changed hello world!';
-greet3b.greet();
+app.use('/', function (req, res, next) {
+	console.log('Request Url:' + req.url);
+	
+	// get all the users
+	Person.find({}, function(err, users) {
+		if (err) throw err;
+		
+		// object of all the users
+		console.log(users);
+	});
+	
+	next();
+});
 
-// create new object from export
-const grtr = new Greet4();
-grtr.greet();
+htmlController(app);
 
-// Revealing module pattern
-greet5();
+apiController(app);
 
-// Emitter
-const emtr = new Emitter();
-
-emtr.on(eventConfig.GREET, () => console.log('somewhere....'));
-emtr.on(eventConfig.GREET, () => console.log('....somehow'));
-
-console.log('Hi');
-emtr.emit(eventConfig.GREET);
+app.listen(port);
